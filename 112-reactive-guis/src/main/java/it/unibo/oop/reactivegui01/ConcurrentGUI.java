@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,7 +45,9 @@ public final class ConcurrentGUI extends JFrame {
          * java.util.concurrent.ExecutorService
          */
         final Agent agent = new Agent();
-        new Thread(agent).start();
+        //new Thread(agent).start();
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        exec.submit(agent);
         /*
          * Register a listener that stops it
          */
