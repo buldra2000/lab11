@@ -25,18 +25,21 @@ public final class ConcurrentGUI extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(ConcurrentGUI.class);
     private JLabel display = new JLabel();
+    final JButton up_counter;
+    final JButton down_counter;
+    final JButton stop_counter;
 
     public ConcurrentGUI(){
         super();
         JFrameUtil.dimensionJFrame(this);
         final JPanel panel = new JPanel();
         panel.add(display);
-        final JButton up = new JButton("up");
-        final JButton down = new JButton("down");
-        final JButton stop = new JButton("stop");
-        panel.add(up);
-        panel.add(down);
-        panel.add(stop);
+        up_counter = new JButton("up");
+        down_counter = new JButton("down");
+        stop_counter = new JButton("stop");
+        panel.add(up_counter);
+        panel.add(down_counter);
+        panel.add(stop_counter);
         this.getContentPane().add(panel);
         this.setVisible(true);
 
@@ -45,8 +48,9 @@ public final class ConcurrentGUI extends JFrame {
         ExecutorService exec = Executors.newSingleThreadExecutor();
         exec.submit(agent);
 
-        up.addActionListener(e -> agent.countUp());
-        down.addActionListener(e -> agent.countDown());
+        up_counter.addActionListener(e -> agent.countUp());
+        down_counter.addActionListener(e -> agent.countDown());
+        stop_counter.addActionListener(e -> agent.countStop());
 
     }
 
@@ -70,6 +74,9 @@ public final class ConcurrentGUI extends JFrame {
                     if(countingDown == 1){
                         this.counter--;
                     }
+                    if (countingDown == -1){
+                        stop = true;
+                    }
 
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {
@@ -86,7 +93,13 @@ public final class ConcurrentGUI extends JFrame {
             countingDown = 0;
         }
 
-        
+        public void countStop(){
+            countingDown = -1;
+            stop_counter.setEnabled(false);
+            up_counter.setEnabled(false);
+            down_counter.setEnabled(false);
+            
+        }
     }
     
 }
